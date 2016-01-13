@@ -57,6 +57,20 @@ class CustomInstrument(Instrument):
     tags = relationship("InstrumentTag")
 
 
+class CustomEvent(Event):
+    # still need to allow searching with place/area/artist aliases
+    aliases = relationship("EventAlias")
+    place_links = relationship("LinkEventPlace")
+    area_links = relationship("LinkAreaEvent")
+    artist_links = relationship("LinkArtistEvent")
+    tags = relationship("EventTag")
+
+
+class CustomInstrument(Instrument):
+    aliases = relationship("InstrumentAlias")
+    tags = relationship("InstrumentTag")
+
+
 class CustomLabel(Label):
     aliases = relationship("LabelAlias")
     area = relationship("CustomArea", foreign_keys=[Label.area_id])
@@ -84,6 +98,10 @@ class CustomReleaseGroup(ReleaseGroup):
 
 class CustomRelease(Release):
     asin = relationship("ReleaseMeta")
+
+class CustomRelease(Release):
+    asin = relationship("ReleaseMeta")
+
 
 class CustomReleaseRaw(ReleaseRaw):
     discids = relationship("CDTOCRaw")

@@ -131,8 +131,8 @@ def convert_artist_credit(obj, include_aliases=True):
     :type obj: :class:`mbdata.models.ArtistCredit`
     """
     ac = models.artist_credit()
-    (ac.add_name_credit(convert_name_credit(nc, include_aliases)) for nc in
-     obj.artists)
+    [ac.add_name_credit(convert_name_credit(nc, include_aliases)) for nc in
+     obj.artists]
     return ac
 
 
@@ -756,6 +756,54 @@ def convert_instrument(obj):
 
 
 
+def convert_event(obj):
+    """
+    :type obj: :class:`sir.schema.modelext.CustomEvent`
+    """
+    event = models.event(id=obj.gid, name=obj.name)
+
+    if obj.comment:
+        event.set_disambiguation(obj.comment)
+
+    if obj.type is not None:
+        event.set_type(obj.type.name)
+
+    lifespan = models.life_span()
+
+    if obj.begin_date_year is not None:
+        lifespan.set_begin(partialdate_to_string(obj.begin_date))
+
+    if obj.end_date_year is not None:
+        lifespan.set_end(partialdate_to_string(obj.end_date))
+
+    if obj.ended:
+        lifespan.set_ended("true")
+    else:
+        lifespan.set_ended("false")
+
+    event.set_life_span(lifespan)
+
+    return event
+
+
+def convert_instrument(obj):
+    """
+    :type obj: :class:`sir.schema.modelext.CustomInstrument`
+    """
+    instrument = models.instrument(id=obj.gid, name=obj.name)
+
+    if obj.comment:
+        instrument.set_disambiguation(obj.comment)
+
+    if obj.description:
+        instrument.set_description(obj.description)
+
+    if obj.type is not None:
+        instrument.set_type(obj.type.name)
+
+    return instrument
+
+
 def convert_label(obj):
     """
     :type obj: :class:`sir.schema.modelext.CustomLabel`
@@ -930,6 +978,15 @@ def convert_standalone_tag(obj):
     tag = models.tag()
     tag.set_name(obj.name)
     return tag
+
+def convert_url(obj):
+    """
+    :type obj: :class'mbdata_models.URL'
+    """
+    url = models.url()
+
+    return url
+
 
 def convert_url(obj):
     """

@@ -67,8 +67,8 @@ def _multiprocessed_import(entities):
     # Only allow one task per child to prevent the process consuming too much
     # memory
     pool = multiprocessing.Pool(max_processes, maxtasksperchild=1)
-    index_function_args = []
     for e in entities:
+        index_function_args = []
         manager = multiprocessing.Manager()
         entity_data_queue = manager.Queue()
         db_uri = config.CFG.get("database", "uri")
@@ -98,10 +98,10 @@ def _multiprocessed_import(entities):
             logger.exception(exc)
         else:
             logger.info("Importing %s successful!", e)
-        pool.terminate()
-        pool.join()
         entity_data_queue.put(STOP)
         solr_process.join()
+    pool.terminate()
+    pool.join()
 
 
 def _index_entity_process_wrapper(args):
